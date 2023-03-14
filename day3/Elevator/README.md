@@ -4,7 +4,7 @@
 
 => Guess the fairly random number
 
-- There is only pseudo randomness since you can get the blocknumber, blockhash & the timestamp on etherscan and you just need to `abi.encodePacked()` both of those values then you can copy the rest of the function in the constructor, the blockHash were looked up on etherscan aswell as the timestamp and stored in variables for readability reasons, the contract should look something like this:
+- There is nop randomness since you can get the Blocknumber & the Blockhash + the timestamp on etherscan and you just need to `abi.encodePacked()` both of those values then you can copy the rest of the function in the constructor, the blockHash were looked up on etherscan aswell as the timestamp and stored in variables for readability reasons, the contract should look like this:
 
 ```solidity
 contract Hack {
