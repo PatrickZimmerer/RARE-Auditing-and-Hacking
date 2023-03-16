@@ -4,21 +4,22 @@
 
 => Guess the number by reversing a cryptographic hash
 
-- There is only pseudo randomness since you can get the blocknumber, blockhash & the timestamp on etherscan and you just need to `abi.encodePacked()` both of those values then you can copy the rest of the function in the constructor, the blockHash were looked up on etherscan aswell as the timestamp and stored in variables for readability reasons, the contract should look something like this:
+### Solution
+
+- There is only 256 variables to check for so you just need to loop through numbers 0 - 255 and compare the hash of those numbers to the answerHash this should be done offChain to save some gas but when setting the gas limit to the maximum in remix `2 ** 64 - 1` is sufficient and easier to test, so I wrote the exploit on chain, when a larger uint would've been used for example uint256 it would've been computationally impossible to guess the right number.
+
+### Attacker Contract
 
 ```solidity
 contract Hack {
-    bytes32 public previousBlockHash =
-        0xaf522205a688dbca66076fb9018238a615472ee70c411ecb9e882f77d874ad40;
-    uint public previousTimestamp = 1678819296000;
+    bytes32 answerHash = 0xdb81b4d58595fbbbb592d3661a34cdca14d7ab379441400cbfa1b78bc447c365;
 
-    function guessNum() external view returns (uint8) {
-        return
-            uint8(
-                keccak256(
-                    abi.encodePacked(previousBlockHash, previousTimestamp)
-                )
-            );
+    function getAnswer() external view returns(uint8){
+        for(uint8 i = 0; i < 256; i++){
+            if(keccak256(i) == answerHash){
+                return i;
+            }
+        }
     }
 }
 ```
