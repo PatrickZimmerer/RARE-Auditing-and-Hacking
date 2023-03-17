@@ -1,0 +1,10 @@
+# Can set testMode to property or assertion mode depending on how you want to test the system's properties
+testMode: assertion
+
+testLimit: 500000
+
+seqLen: 500
+
+corpusDir: echidna-coverage
+
+sender: ['0x10000', '0x20000', '0x30000']

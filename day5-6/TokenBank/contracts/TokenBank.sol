@@ -16,7 +16,7 @@ contract SimpleERC223Token {
 
     event Transfer(address indexed from, address indexed to, uint256 value);
 
-    function SimpleERC223Token() public {
+    constructor() public {
         balanceOf[msg.sender] = totalSupply;
         emit Transfer(address(0), msg.sender, totalSupply);
     }
@@ -89,7 +89,7 @@ contract TokenBankChallenge {
     SimpleERC223Token public token;
     mapping(address => uint256) public balanceOf;
 
-    function TokenBankChallenge(address player) public {
+    constructor(address player) public {
         token = new SimpleERC223Token();
 
         // Divide up the 1,000,000 tokens, which are all initially assigned to
