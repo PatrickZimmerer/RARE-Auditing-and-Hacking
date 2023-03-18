@@ -1,0 +1,8 @@
+# Can set testMode to property or assertion mode depending on how you want to test the system's properties
+testMode: property
+
+testLimit: 500000
+
+corpusDir: echidna-coverage
+
+shrinkLimit: 20000
