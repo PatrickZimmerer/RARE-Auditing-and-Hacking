@@ -6,7 +6,7 @@ contract RetirementFundChallenge {
     address beneficiary;
     uint256 expiration = now + 10 years;
 
-    function RetirementFundChallenge(address player) public payable {
+    constructor(address player) public payable {
         require(msg.value == 1 ether);
 
         beneficiary = player;
