@@ -11,7 +11,7 @@
 ### Solution
 
 - The weakness is in the Banks `withdraw(uint256 amount)` function since this does an external contract call `require(token.transfer(msg.sender, amount))` beofre updating the balance of the message sender, this external call does another external call if the sent to is a contract to check if he can receive those tokens and implemented the `tokenFallback()` function which we can implement however we want to. Follwing Steps were done:
-- Withdraw our 500k tokens from the bank calling as the player `transfer(hackContract, 500000 ether)`
+- Withdraw our 500k tokens from the bank calling as the player `withdraw(500000 ether)`
 - Send them from the tokenContract to our hackContract `transfer(hackContract, 500000 ether)`
 - Deposit them in the bank calling the hackContracts so the Hack contracts `depositTokensAtBank(500000 ether)` => balance is now 500k.
 - Call the `attack()` function from the hackContract which will result in having a `tokenContract.balanceOf(hackContract)` of 1 million tokens which you could now withdraw to the player
