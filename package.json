@@ -5,7 +5,8 @@
 	"license": "MIT",
 	"dependencies": {
 		"@rari-capital/solmate": "^6.4.0",
-		"hardhat": "^2.13.0"
+		"hardhat": "^2.13.0",
+		"solmate": "^6.7.0"
 	},
 	"devDependencies": {
 		"@ethersproject/abi": "^5.4.7",
