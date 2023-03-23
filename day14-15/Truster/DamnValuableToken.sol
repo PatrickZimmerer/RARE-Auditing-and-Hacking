@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "solmate/src/tokens/ERC20.sol";
+import "../../../node_modules/solmate/src/tokens/ERC20.sol";
 
 /**
  * @title DamnValuableToken
