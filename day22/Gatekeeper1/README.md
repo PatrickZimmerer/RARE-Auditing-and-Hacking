@@ -8,7 +8,7 @@
 
 - Remember what you've learned from the Telephone and Token levels.
 
-- You can learn more about the special function gasleft(), in Solidity's documentation (see here and here).
+- You can learn more about the special function gasleft(), in Solidity's documentation.
 
 ### Solution
 
