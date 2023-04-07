@@ -19,6 +19,7 @@
 - Advance the evm time by 5 days so the new payout round takes place
 
 - Create a contract that takes a Flashloan for the 1 million liquidity tokens
+
 - When the contract receives the Flashloan we need to approve the rewarder pool for our tokens and send the tokens via deposit to the rewarder pool
 
 - We get rewarded with rewardToken
