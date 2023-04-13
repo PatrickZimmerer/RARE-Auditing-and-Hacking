@@ -16,6 +16,17 @@
 
 - Generate runtime code that returns 42 by storing the value 42 at memory location 0 and then returns the first (0th) memory location so bytes 0 - 32 as following
 
+```assembly
+// Goal: Store 42 in Memory and return first memory slot
+// PUSH1 2a => 602a // value = 42
+// PUSH1 00 => 6000// at location 00
+// MSTORE   => 52 // Store at location 00 the value 42 (2a)
+// PUSH1 20 => 6020 // 32
+// PUSH1 00 => 6000 // 00
+// RETURN f3 => returns from byte 0 to byte 32
+// = 602a 6000 52 6020 6000 f3
+```
+
 - This will give us the runtime code we need to store `602a60005260206000f3`
 
 - Generate our Bytecode contract that stores our runtime code in memory and then returns the last 10 bytes, since the evm stores in 32bytes and just pads 22bytes in Zeros to the left, when being called (which contains our runtime code that returns 42)
