@@ -12,7 +12,7 @@
 
 ### Solution
 
-- Placeholder
+- Read about how msg.sender and msg.value behaves when performing a delegatecall
 
 ### Attacker Contract
 
