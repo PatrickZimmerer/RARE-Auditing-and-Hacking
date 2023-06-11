@@ -1,4 +1,4 @@
-# Magic Number Ethernaut
+# Motorbike Ethernaut
 
 ## Goals
 
