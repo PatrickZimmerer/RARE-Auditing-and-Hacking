@@ -14,7 +14,7 @@
 
 ### Solution
 
-- Placeholder
+- Read EIP-1967 & about Initializable contract
 
 ### Attacker Contract
 
