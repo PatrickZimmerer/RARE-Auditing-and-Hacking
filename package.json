@@ -4,6 +4,7 @@
 	"author": "Patrick Zimmerer",
 	"license": "MIT",
 	"dependencies": {
+		"@openzeppelin/contracts-upgradeable": "^4.9.1",
 		"@rari-capital/solmate": "^6.4.0",
 		"hardhat": "^2.13.0",
 		"solady": "^0.0.86",
